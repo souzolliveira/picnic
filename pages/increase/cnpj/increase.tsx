@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Analysis from "./analysis";
+import Analysis from "@/components/analysis/analysis";
 import ChooseDocument from "./chooseDocument";
 import Data from "./data";
 import Start from "./start";
@@ -7,11 +7,24 @@ import Upload from "./upload";
 
 export default function Increase() {
   const steps = ["start", "data", "document", "upload", "analysis"];
-  const [document, setDocument] = useState("CNH");
   const [selectedStep, setSelectedStep] = useState("start");
 
+  const [CNPJ, setCNPJ] = useState("");
+  const [name, setName] = useState("");
+  const [date, setDate] = useState("");
+  const [CPF, setCPF] = useState("");
+
+  const [document, setDocument] = useState("CNH");
+  const [CNH, setCNH] = useState({});
+  const [frontRG, setFrontRG] = useState({});
+  const [backRG, setBackRG] = useState({});
+  const [selfie, setSelfie] = useState({});
+
   const next = () => {
-    if (selectedStep === "analysis") {
+    if (selectedStep === "upload") {
+      console.log(CNPJ, name, date, CPF, CNH, frontRG, backRG, selfie);
+      return null;
+    } else if (selectedStep === "analysis") {
       return null;
     }
     const index = steps.findIndex((item) => item === selectedStep);
@@ -35,8 +48,14 @@ export default function Increase() {
       case "data":
         component = (
           <Data
-            document={document}
-            setDocument={setDocument}
+            CNPJ={CNPJ}
+            setCNPJ={setCNPJ}
+            name={name}
+            setName={setName}
+            date={date}
+            setDate={setDate}
+            CPF={CPF}
+            setCPF={setCPF}
             next={next}
             previous={previous}
           />
@@ -54,7 +73,19 @@ export default function Increase() {
         break;
       case "upload":
         component = (
-          <Upload document={document} next={next} previous={previous} />
+          <Upload
+            document={document}
+            CNH={CNH}
+            setCNH={setCNH}
+            frontRG={frontRG}
+            setFrontRG={setFrontRG}
+            backRG={backRG}
+            setBackRG={setBackRG}
+            selfie={selfie}
+            setSelfie={setSelfie}
+            next={next}
+            previous={previous}
+          />
         );
         break;
       case "analysis":
