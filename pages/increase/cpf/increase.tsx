@@ -1,16 +1,24 @@
 import { useState } from "react";
-import Analysis from "./analysis";
+import Analysis from "@/components/analysis/analysis";
 import ChooseDocument from "./chooseDocument";
 import Start from "./start";
 import Upload from "./upload";
 
 export default function Increase() {
   const steps = ["start", "document", "upload", "analysis"];
-  const [document, setDocument] = useState("CNH");
   const [selectedStep, setSelectedStep] = useState("start");
 
+  const [document, setDocument] = useState("CNH");
+  const [CNH, setCNH] = useState({});
+  const [frontRG, setFrontRG] = useState({});
+  const [backRG, setBackRG] = useState({});
+  const [selfie, setSelfie] = useState({});
+
   const next = () => {
-    if (selectedStep === "analysis") {
+    if (selectedStep === "upload") {
+      console.log(CNH, frontRG, backRG, selfie);
+      return null;
+    } else if (selectedStep === "analysis") {
       return null;
     }
     const index = steps.findIndex((item) => item === selectedStep);
@@ -43,7 +51,19 @@ export default function Increase() {
         break;
       case "upload":
         component = (
-          <Upload document={document} next={next} previous={previous} />
+          <Upload
+            document={document}
+            CNH={CNH}
+            setCNH={setCNH}
+            frontRG={frontRG}
+            setFrontRG={setFrontRG}
+            backRG={backRG}
+            setBackRG={setBackRG}
+            selfie={selfie}
+            setSelfie={setSelfie}
+            next={next}
+            previous={previous}
+          />
         );
         break;
       case "analysis":

@@ -1,8 +1,8 @@
-
 import { IoMdArrowUp } from "react-icons/io";
 import { IoPersonSharp } from "react-icons/io5";
-import Back from "@/components/back";
-import Describe from "./describe";
+import { useTranslation } from "next-i18next";
+import Back from "@/components/back/back";
+import Description from "./description";
 
 export interface Props {
   next: Function;
@@ -10,6 +10,8 @@ export interface Props {
 }
 
 export default function Start(props: Props) {
+  const { t } = useTranslation();
+
   return (
     <main className="flex sm:min-h-screen bg-gray-100 justify-center">
       <div className="w-full max-w-6xl">
@@ -18,7 +20,7 @@ export default function Start(props: Props) {
             <Back previous={props.previous} />
             <div className="divide-y divide-gray-200">
               <div className="max-w-[430px] flex flex-col rounded-2xl bg-white p-8 mt-4">
-                <Describe />
+                <Description />
                 <div>
                   <div className="flex flex-row pt-8 gap-x-4">
                     <div className="bg-black p-4 rounded-lg place-content-center flex relative h-fit">
@@ -29,31 +31,28 @@ export default function Start(props: Props) {
                     </div>
                     <div className="flex flex-col gap-y-1">
                       <span className="font-semibold text-sm">
-                        Cadastro de Pessoa Física
+                        {t("increase/cpf/start-enroll-title")}
                       </span>
                       <span className="font-normal text-sm leading-5 text-gray-600">
-                        Para aumentar seu limite os seguintes documentos serão
-                        necessários:
+                        {t("increase/cpf/start-enroll-description")}
                       </span>
                     </div>
                   </div>
                   <div className="flex flex-col divide-y mt-4">
                     <div className="flex flex-col gap-y-1 py-3">
                       <span className="font-semibold text-sm">
-                        Foto do documento pessoal
+                        {t("increase/cpf/start-document-title")}
                       </span>
                       <span className="font-normal text-sm leading-5 text-gray-600">
-                        Foto nítida de sua Carteira Nacional de Habilitação
-                        (CNH) ou Registro Geral (RG)
+                        {t("increase/cpf/start-document-description")}
                       </span>
                     </div>
                     <div className="flex flex-col gap-y-1 py-3">
                       <span className="font-semibold text-sm">
-                        Foto do Rosto (Selfie)
+                        {t("increase/cpf/start-selfie-title")}
                       </span>
                       <span className="font-normal text-sm leading-5 text-gray-600">
-                        Foto em um ambiente com boa iluminação com o seu rosto
-                        claramente visível
+                        {t("increase/cpf/start-selfie-description")}
                       </span>
                     </div>
                   </div>
@@ -63,7 +62,7 @@ export default function Start(props: Props) {
                   className="w-full inline-flex items-center justify-center p-3 border border-transparent font-medium rounded-md text-white mt-6 sm:w-auto sm:text-sm bg-emerald-500"
                   onClick={() => props.next()}
                 >
-                  <p className="mr-1">Iniciar</p>
+                  {t("increase/cpf/start-action")}
                 </button>
               </div>
             </div>

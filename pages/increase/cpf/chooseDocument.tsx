@@ -1,7 +1,8 @@
-import Back from "@/components/back";
-import Describe from "./describe";
-import Document from "@/components/document";
-import Step from "@/components/step";
+import { useTranslation } from "next-i18next";
+import Back from "@/components/back/back";
+import Description from "./description";
+import Document from "@/components/document/document";
+import Step from "@/components/step/step";
 
 export interface Props {
   document: string;
@@ -11,6 +12,8 @@ export interface Props {
 }
 
 export default function ChooseDocument(props: Props) {
+  const { t } = useTranslation();
+
   return (
     <main className="flex sm:min-h-screen bg-gray-100 justify-center">
       <div className="w-full max-w-6xl">
@@ -19,32 +22,38 @@ export default function ChooseDocument(props: Props) {
             <Back previous={props.previous} />
             <div className="divide-y divide-gray-200">
               <div className="max-w-[430px] flex flex-col rounded-2xl bg-white p-8 mt-4">
-                <Describe />
+                <Description />
                 <div className="flex flex-col pt-6">
                   <div className="flex gap-x-6">
-                    <span className="font-medium text-sm">Passo 1 de 2</span>
+                    <span className="font-medium text-sm">
+                      {t("increase/cpf/choosedocument-step")}
+                    </span>
                     <div className="flex gap-x-4">
                       <Step step="active" />
                       <Step step="deactivate" />
                     </div>
                   </div>
                   <span className="text-sm text-gray-500">
-                    Selecione qual documento pessoal enviar
+                    {t("increase/cpf/choosedocument-select")}
                   </span>
-                  <div className="flex flex-col pt-4">
+                  <div className="flex flex-col mt-6">
                     <Document
                       selectedDocument={props.document}
                       document="CNH"
                       setDocument={props.setDocument}
-                      title="Carteira Nacional de Habilitação (CNH)"
-                      description="Envie apenas uma foto nítida do documento aberto"
+                      title={t("increase/cpf/choosedocument-cnh-title")}
+                      description={t(
+                        "increase/cpf/choosedocument-cnh-description"
+                      )}
                     />
                     <Document
                       selectedDocument={props.document}
                       document="RG"
                       setDocument={props.setDocument}
-                      title="Registro Geral (RG)"
-                      description="Envie duas fotos: uma da frente e outra do verso do documento"
+                      title={t("increase/cpf/choosedocument-rg")}
+                      description={t(
+                        "increase/cpf/choosedocument-rg-description"
+                      )}
                     />
                   </div>
                 </div>
@@ -53,7 +62,7 @@ export default function ChooseDocument(props: Props) {
                   className="w-full inline-flex items-center justify-center p-3 border border-transparent font-medium rounded-md text-white mt-6 sm:w-auto sm:text-sm bg-emerald-500"
                   onClick={() => props.next()}
                 >
-                  <p className="mr-1">Continuar</p>
+                  {t("increase/cpf/choosedocument-action")}
                 </button>
               </div>
             </div>

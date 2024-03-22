@@ -1,20 +1,26 @@
-import { FormEvent, useState } from "react";
-import Back from "@/components/back";
-import Describe from "./describe";
-import InputFile from "@/components/inputFile";
-import Step from "@/components/step";
+import { FormEvent } from "react";
+import { useTranslation } from "next-i18next";
+import Back from "@/components/back/back";
+import Description from "./description";
+import InputFile from "@/components/inputFile/inputFile";
+import Step from "@/components/step/step";
 
 export interface Props {
   document: string;
+  CNH: object;
+  setCNH: Function;
+  frontRG: object;
+  setFrontRG: Function;
+  backRG: object;
+  setBackRG: Function;
+  selfie: object;
+  setSelfie: Function;
   next: Function;
   previous: Function;
 }
 
 export default function Document(props: Props) {
-  const [CNH, setCNH] = useState({});
-  const [frontRG, setFrontRG] = useState({});
-  const [backRG, setBackRG] = useState({});
-  const [selfie, setSelfie] = useState({});
+  const { t } = useTranslation();
 
   const renderDocument = () => {
     let component = null;
@@ -22,60 +28,99 @@ export default function Document(props: Props) {
       case "CNH":
         component = (
           <InputFile
-            name="document-cnh"
-            label="Foto da CNH aberta"
-            setDocument={setCNH}
+            name="cnh"
+            label={t("increase/cpf/upload-cnh")}
+            setFile={props.setCNH}
           />
         );
         break;
       case "RG":
         component = (
-          <div>
+          <>
             <InputFile
-              name="document-rg-front"
-              label="Foto do RG (frente)"
-              setDocument={setFrontRG}
+              name="rg-front"
+              label={t("increase/cpf/upload-rg-front")}
+              setFile={props.setFrontRG}
             />
             <InputFile
-              name="document-rg-back"
-              label="Foto do RG (verso)"
-              setDocument={setBackRG}
+              name="rg-back"
+              label={t("increase/cpf/upload-rg-back")}
+              setFile={props.setBackRG}
             />
-          </div>
+          </>
         );
         break;
     }
     return component;
   };
 
-  const alertMissedFiles = (file: string) => {
-    const element = document.getElementById(`document-${file}-input`);
+  const alertMissedFiles = (input: string) => {
+    const element = document.getElementById(`input-file-${input}-input`);
     element?.classList.add("border-red-300");
     element?.classList.add("text-red-900");
-    const label = document.getElementById(`document-${file}-label`);
+    const label = document.getElementById(`input-file-${input}-label`);
     label?.classList.add("text-red-900");
-    const button = document.getElementById(`document-${file}-button`);
+    const button = document.getElementById(`input-file-${input}-button`);
     button?.classList.add("border-red-300");
     button?.classList.add("bg-red-300");
     button?.classList.add("text-red-900");
   };
 
+  const removeAlert = (input: string) => {
+    const element = document.getElementById(`input-file-${input}-input`);
+    element?.classList.remove("border-red-300");
+    element?.classList.remove("text-red-900");
+    const label = document.getElementById(`input-file-${input}-label`);
+    label?.classList.remove("text-red-900");
+    const button = document.getElementById(`input-file-${input}-button`);
+    button?.classList.remove("border-red-300");
+    button?.classList.remove("bg-red-300");
+    button?.classList.remove("text-red-900");
+  };
+
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (props.document === "CNH" && JSON.stringify(CNH) === "{}") {
-      alertMissedFiles("cnh");
+    let verify = true;
+    if (props.document === "CNH") {
+      const inputCNH = document.getElementById(
+        "input-file-cnh"
+      ) as HTMLInputElement;
+      if (!inputCNH?.files?.length) {
+        alertMissedFiles("cnh");
+        verify = false;
+      } else {
+        removeAlert("cnh");
+      }
+    } else if (props.document === "RG") {
+      const inputRGFront = document.getElementById(
+        "input-file-rg-front"
+      ) as HTMLInputElement;
+      if (!inputRGFront?.files?.length) {
+        alertMissedFiles("rg-front");
+        verify = false;
+      } else {
+        removeAlert("rg-front");
+      }
+      const inputRGBack = document.getElementById(
+        "input-file-rg-back"
+      ) as HTMLInputElement;
+      if (!inputRGBack?.files?.length) {
+        alertMissedFiles("rg-back");
+        verify = false;
+      } else {
+        removeAlert("rg-back");
+      }
     }
-    if (props.document === "RG" && JSON.stringify(frontRG) === "{}") {
-      alertMissedFiles("rg-front");
-    }
-    if (props.document === "RG" && JSON.stringify(backRG) === "{}") {
-      alertMissedFiles("rg-back");
-    }
-    if (JSON.stringify(selfie) === "{}") {
+    const inputSelfie = document.getElementById(
+      "input-file-selfie"
+    ) as HTMLInputElement;
+    if (!inputSelfie?.files?.length) {
       alertMissedFiles("selfie");
+      verify = false;
+    } else {
+      removeAlert("selfie");
     }
-    // todo: enviar documentos
-    // props.next();
+    return verify ? props.next() : null;
   };
 
   return (
@@ -89,30 +134,34 @@ export default function Document(props: Props) {
               onSubmit={(event) => onSubmit(event)}
             >
               <div className="max-w-[430px] flex flex-col rounded-2xl bg-white p-8 mt-4">
-                <Describe />
+                <Description />
                 <div className="flex flex-col pt-6">
                   <div className="flex gap-x-6">
-                    <span className="font-medium text-sm">Passo 1 de 2</span>
+                    <span className="font-medium text-sm">
+                      {t("increase/cpf/upload-step")}
+                    </span>
                     <div className="flex gap-x-4">
                       <Step step="passed" />
                       <Step step="active" />
                     </div>
                   </div>
                   <span className="text-sm text-gray-500">
-                    Envie os arquivos solicitados
+                    {t("increase/cpf/upload-archives")}
                   </span>
-                  {renderDocument()}
-                  <InputFile
-                    name="document-selfie"
-                    label="Foto do rosto (selfie)"
-                    setDocument={setSelfie}
-                  />
+                  <div className="flex flex-col gap-y-4 mt-6">
+                    {renderDocument()}
+                    <InputFile
+                      name="selfie"
+                      label={t("increase/cpf/upload-selfie")}
+                      setFile={props.setSelfie}
+                    />
+                  </div>
                 </div>
                 <button
                   type="submit"
                   className="w-full inline-flex items-center justify-center p-3 border border-transparent font-medium rounded-md text-white mt-6 sm:w-auto sm:text-sm bg-emerald-500"
                 >
-                  <p className="mr-1">Finalizar</p>
+                  {t("increase/cpf/upload-action")}
                 </button>
               </div>
             </form>
